@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade - Login</title>
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+
+<body>
+    <h1>Faça seu login!</h1>
+
+    <div id="loginDiv">
+        <h2>Insira suas credenciais</h2>
+        <input type="text" id="username" placeholder="Usuário">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+        <p id="loginMsg"></p>
+    </div>
+
+    <!-- <div id="perfilDiv" style="display:none;">
+        <h2>Perfil</h2>
+        <p id="perfilMsg"></p>
+        <button onclick="logout()">Logout</button>
+    </div> -->
+</body>
+
+</html>
+<script>
+    const baseURL = 'http://localhost:3000';
+
+    async function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const res = await fetch(`${baseURL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include' // para enviar/receber cookie
+        });
+
+        const text = await res.text();
+
+        window.alert(text);
+
+        if (text.includes('bem sucedido')) {
+            document.getElementById('loginDiv').style.display = 'none';
+
+            // document.getElementById('perfilDiv').style.display = 'block';
+            
+            getPerfil();
+            window.location.href = "logado.html";
+        }
+    }
+
+    async function getPerfil() {
+        const res = await fetch(`${baseURL}/perfil`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const text = await res.text();
+        document.getElementById('perfilMsg').innerText = text;
+    }
+
+    async function logout() {
+        const res = await fetch(`${baseURL}/logout`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const text = await res.text();
+        alert(text);
+
+        document.getElementById('perfilDiv').style.display = 'none';
+        document.getElementById('loginDiv').style.display = 'block';
+        document.getElementById('loginMsg').innerText = '';
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+    }
+
+    function irParaOutraPagina() {
+        window.location.href = "logado.html";
+    }
+
+    async function getLogin()
+    {
+        const res =  await fetch(`${baseURL}/perfil`, {
+        method: 'GET',
+        credentials: 'include'
+        });
+
+        const text =  await res.text();
+        if (!text.includes('login primeiro')) {
+            window.location.href = "logado.html";
+            window.alert('Seu login já foi efetuado!');
+        }
+    }
+
+    window.onload = async function()
+    {
+        getLogin();
+    };
+</script>

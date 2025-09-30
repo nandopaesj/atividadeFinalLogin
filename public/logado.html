@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade - Login efetuado</title>
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+    <div id="perfilDiv">
+        <h2>Perfil</h2>
+        <p id="perfilMsg"></p>
+        <button onclick="logout()">Logout</button>
+    </div><br><br>
+    <button onclick="sucesso()">Sucesso</button>
+    <button onclick="criar()">Criar</button>
+    <button onclick="naoEncontrado()">Não Encontrado</button>
+    <button onclick="naoAutorizado()">Não Autorizado</button>
+    <button onclick="proibido()">Proibido</button>
+    <button onclick="somenteGet()">Somente GET</button>
+    <button onclick="usuarioJaExiste()">Usuário já existe</button>
+    <button onclick="limite()">Limite</button>
+    <br><br>
+    <div id="Resultado"></div>
+</body>
+</html>
+<script>
+    const baseURL = 'http://localhost:3000';
+
+    let temporizadorSessao; 
+
+    async function getPerfil()
+    {
+        const res =  await fetch(`${baseURL}/perfil`, {
+        method: 'GET',
+        credentials: 'include'
+        });
+
+        const text =  await res.text();
+        if (text.includes('login primeiro')) {
+            window.alert('Você precisa efetuar o login antes de acessar esta página!!!');
+            window.location.href = "index.html";
+        }
+
+        document.getElementById('perfilMsg').innerText = text;
+    }
+
+    async function logout()
+    {
+        const res = await fetch(`${baseURL}/logout`, {
+        method: 'GET',
+        credentials: 'include'
+        });
+
+        const text = await res.text();
+        alert(text);
+        window.location.href = "index.html";
+    }
+
+    /// TEMPORIZADOR DE SESSÃO - APRIMORAR, CHATGPT
+    async function iniciarTemporizador()
+    {
+        temporizadorSessao = setTimeout(logoutTimer, 60000);
+        console.log("Temporizador iniciado. Se não houver atividade, a sessão será encerrada em 1 minuto.");
+    }
+
+    async function resetarTemporizador()
+    {
+        clearTimeout(temporizadorSessao); // Cancela o temporizador anterior
+        iniciarTemporizador(); // Inicia um novo temporizador
+        console.log("Atividade detectada. Temporizador resetado.");
+    }
+
+    async function logoutTimer()
+    {
+        alert("Sua sessão expirou por inatividade. Por favor, faça login novamente.");
+        logout();
+        window.location.href = "index.html";
+    }
+
+    // event listeners
+    document.addEventListener("click", resetarTemporizador);
+    document.addEventListener("mousemove", resetarTemporizador);
+    document.addEventListener("keydown", resetarTemporizador);
+
+    window.onload = async function()
+    {
+        getPerfil();
+        iniciarTemporizador();
+    };
+
+    async function sucesso()
+    {
+        const res = await fetch(`${baseURL}/sucesso`, {
+        method: 'GET',
+        credentials: 'include'
+        });
+
+        const text = await res.text();
+        document.getElementById('Resultado').innerText = text;
+    }
+
+    async function criar()
+    {
+        const res = await fetch(`${baseURL}/criar`, {
+        method: 'POST',
+        credentials: 'include'
+        });
+
+        const text = await res.text();
+        document.getElementById('Resultado').innerText = text;
+    }
+
+    async function naoEncontrado()
+    {
+        const res = await fetch(`${baseURL}/nao-encontrado`, {
+        method: 'GET',
+        credentials: 'include'
+        });
+
+        const text = await res.text();
+        document.getElementById('Resultado').innerText = text;
+    }
+
+    async function naoAutorizado()
+    {
+        const res = await fetch(`${baseURL}/nao-autorizado`, {
+        method: 'GET',
+        credentials: 'include'
+        });
+
+        const text = await res.text();
+        document.getElementById('Resultado').innerText = text;
+    }
+
+    async function proibido()
+    {
+        const res = await fetch(`${baseURL}/proibido`, {
+        method: 'GET',
+        credentials: 'include'
+        });
+
+        const text = await res.text();
+        document.getElementById('Resultado').innerText = text;
+    }
+
+    async function somenteGet()
+    {
+        const res = await fetch(`${baseURL}/somente-get`, {
+        method: 'POST',
+        credentials: 'include'
+        });
+
+        const text = await res.text();
+        document.getElementById('Resultado').innerText = text;
+    }
+
+    async function usuarioJaExiste()
+    {
+        const res = await fetch(`${baseURL}/usuario`, {
+        method: 'POST',
+        credentials: 'include'
+        });
+
+        const text = await res.text();
+        document.getElementById('Resultado').innerText = text;
+    }
+
+    async function limite()
+    {
+        const res = await fetch(`${baseURL}/limite`, {
+        method: 'GET',
+        credentials: 'include'
+        });
+
+        const text = await res.text();
+        document.getElementById('Resultado').innerText = text;
+    }
+</script>
